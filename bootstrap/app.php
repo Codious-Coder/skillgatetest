@@ -11,12 +11,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Global middleware (runs on every request)
-        // $middleware->append(\App\Http\Middleware\TrustHosts::class);
-
-        // Route middleware (was `$routeMiddleware` in Kernel.php)
         $middleware->alias([
-            'jwt.auth' => \App\Http\Middleware\AuthenticateWithJwt::class,
+            'jwt.cookie' => \App\Http\Middleware\AttachJwtFromCookie::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
