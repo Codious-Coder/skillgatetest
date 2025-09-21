@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SubcategoryController;
 // use App\Http\Controllers\Auth\OtpLoginController;
 // use App\Http\Controllers\Auth\ExamineeRegistrationController;
 // use App\Http\Controllers\UserManagementController;
@@ -13,10 +16,29 @@ Route::get('/login', [AuthController::class, 'show'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {return view('dashboard');})->name('dashboard');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // dashboard routes
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/manager', [DashboardController::class, 'manager'])->name('dashboard.manager');
+        Route::get('/employee', [DashboardController::class, 'employee'])->name('dashboard.employee');
+        Route::get('/adv-user', [DashboardController::class, 'advUser'])->name('dashboard.adv-user');
+    });
+
+    // category routes
+    Route::resource('categories', CategoryController::class)->except(['show']);
+    Route::resource('subcategories', SubcategoryController::class)->except(['show']);
+
+    // dependent dropdown JSON endpoint
+    Route::get('subcategories/by-category', [SubcategoryController::class, 'byCategory'])
+        ->name('subcategories.by-category');
 });
+
+
 
 // OTP flow for examinees
 Route::post('/otp/send', [OtpLoginController::class, 'send'])->name('otp.send');

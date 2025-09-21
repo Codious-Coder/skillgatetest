@@ -1,0 +1,105 @@
+@extends('backend.app') {{-- Using the base layout --}}
+
+@section('title', 'Category')  {{-- Title section --}}
+
+@push('css')   {{-- Page-specific styles go here --}}
+    
+    <link href="{{asset('backend/assets/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('backend/assets/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css')}}" rel="stylesheet" type="text/css" />
+    <style>
+        .categorybtn{
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        .categorybtnlink{
+            text-decoration: none;
+            color: #963B68 !important;
+        }
+        .categorybtn:hover .categorybtnlink{
+            color: #ffffff !important;
+        }
+        .categorybtnlink:hover{
+            color: #ffffff !important;
+        }
+        
+    </style>
+@endpush
+
+{{-- Main dashboard content area --}}
+
+@section('content') 
+    <!-- Button Datatable -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Category Information</h5>
+                </div><!-- end card header -->
+                <div class="card" style="position: relative;margin-bottom:50px;">
+                    <div class="d-flex flex-wrap gap-2">
+                        <div class="btn-group categorybtn" role="group" aria-label="Default button group">
+                            <button type="button" class="btn btn-outline-secondary "> <a class="categorybtnlink" href="{{ route('categories.create') }}">Add New Category</a></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Category Name</th>
+                                <th>Active</th>
+                                <th>Created</th>
+                                <th width="120">Action</th>    
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($categories as $category)
+                            <tr>
+                                <td>{{ $category->id }}</td>
+                                <td>{{ $category->name }}</td>
+                                <td>{{ $category->is_active ? 'Yes' : 'No' }}</td>
+                                <td>{{ $category->created_at->format('Y-m-d') }}</td>
+                                <td>
+                                    <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @endforeach
+                            
+                            
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+@endsection
+
+
+@push('scripts')   {{-- Page-specific scripts go here --}}
+    
+       
+        <script src="{{asset('backend/assets/libs/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+
+        <script src="{{asset('backend/assets/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js')}}"></script>
+        <script src="{{asset('backend/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js')}}"></script>
+
+        <script src="{{asset('backend/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js')}}"></script>
+        <script src="{{asset('backend/assets/libs/datatables.net-buttons/js/buttons.flash.min.js')}}"></script>
+        <script src="{{asset('backend/assets/libs/datatables.net-buttons/js/buttons.html5.min.js')}}"></script>
+        <script src="{{asset('backend/assets/libs/datatables.net-buttons/js/buttons.print.min.js')}}"></script>
+
+        <script src="{{asset('backend/assets/libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js')}}"></script>
+       
+        <script src="{{asset('backend/assets/libs/datatables.net-keytable/js/dataTables.keyTable.min.js')}}"></script>
+        
+        <script src="{{asset('backend/assets/js/pages/datatable.init.js')}}"></script>
+    
+@endpush
